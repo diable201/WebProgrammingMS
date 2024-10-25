@@ -72,6 +72,8 @@ jobs:
 
             # Restart the containers
             docker compose up -d --remove-orphans
+
+            docker compose exec web python todo/manage.py collectstatic --noinput
       
       # Step 6: Send Telegram Notification on Success
       - name: Send Telegram Notification - Success
