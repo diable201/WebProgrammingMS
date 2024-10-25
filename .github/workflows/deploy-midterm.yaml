@@ -3,7 +3,7 @@ name: Deploy Midterm Django App
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'Midterm/**'  # Trigger only if files within Midterm are changed
 
