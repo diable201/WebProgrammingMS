@@ -100,7 +100,7 @@ jobs:
             set -e  # Exit on any error
 
             echo "Navigating to the project directory..."
-            cd "${{ secrets.REMOTE_PROJECT_PATH }}"
+            cd "${{ secrets.DOCKER_COMPOSE_PATH }}"
 
             echo "Stopping and removing any running containers..."
             docker compose down || true
