@@ -44,8 +44,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 45916
-          source: "./Midterm/docker-compose.yaml"
-          target: "${{ secrets.REMOTE_PROJECT_PATH }}/"
+          source: "Midterm/docker-compose.yaml"
+          target: "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
 
       # Step 6: SSH into the server and deploy with Docker Compose
       - name: Deploy to Server via SSH
