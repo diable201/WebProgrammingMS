@@ -70,7 +70,7 @@ jobs:
             chmod 600 .env
 
             cat > docker-compose.yml <<'EOF'
-            $(cat ./Midterm/docker-compose.yml)
+            $(cat ./Midterm/docker-compose.yaml)
             EOF
 
             # Pull the latest Docker image (if using Docker Hub)
