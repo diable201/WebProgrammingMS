@@ -68,25 +68,7 @@ jobs:
           target: "${{ secrets.REMOTE_PROJECT_PATH }}/"  # **Only** the directory path
           overwrite: true
 
-      # Step 7: Verify docker-compose.yaml is a File
-      - name: Verify docker-compose.yaml is a File
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 45916
-          script: |
-            echo "Verifying if docker-compose.yaml is a file..."
-            if [ -f "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
-              echo "Success: docker-compose.yaml is a file."
-            else
-              echo "Error: docker-compose.yaml is NOT a file."
-              ls -ld "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
-              exit 1  # Exit with error to halt the workflow
-            fi
-
-      # Step 8: Deploy to Server via SSH and Docker Compose
+      # Step 7: Deploy to Server via SSH and Docker Compose
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -114,7 +96,7 @@ jobs:
             echo "Collecting static files..."
             docker compose exec web python todo/manage.py collectstatic --noinput
 
-      # Step 9: Send Telegram Notification on Success
+      # Step 8: Send Telegram Notification on Success
       - name: Send Telegram Notification - Success
         if: success()
         uses: appleboy/telegram-action@master
@@ -125,7 +107,7 @@ jobs:
             ✅ *Deployment Successful*
             The Midterm Django App has been deployed successfully! 🎉
 
-      # Step 10: Send Telegram Notification on Failure
+      # Step 9: Send Telegram Notification on Failure
       - name: Send Telegram Notification - Failure
         if: failure()
         uses: appleboy/telegram-action@master
