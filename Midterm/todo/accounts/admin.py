@@ -11,5 +11,13 @@ class UserProfileAdmin(admin.ModelAdmin):
     readonly_fields = ("user", "get_full_name")
     fieldsets = (
         (None, {"fields": ("user",)}),
-        ("Дополнительная информация", {"fields": ("bio", "location",)}),
+        (
+            "Дополнительная информация",
+            {
+                "fields": (
+                    "bio",
+                    "location",
+                )
+            },
+        ),
     )

@@ -11,6 +11,7 @@ from rest_framework.request import Request
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
+
 logger = logging.getLogger(__name__)
 
 from tasks.models import Task
@@ -94,7 +95,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(task)
         return Response(serializer.data)
 
-
     @action(detail=True, methods=["patch"])
     def unarchive(self, request: Request, pk: int = None) -> Response:
         task: Task = self.get_object()
@@ -164,8 +164,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         task = serializer.instance
         self.invalidate_task_cache(task.id)
         return super().perform_update(serializer)
-    
+
     def partial_update(self, request, *args, **kwargs):
-        self.invalidate_task_cache(kwargs['pk'])
+        self.invalidate_task_cache(kwargs["pk"])
         return super().partial_update(request, *args, **kwargs)
-    
