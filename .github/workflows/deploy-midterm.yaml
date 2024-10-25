@@ -1,0 +1,100 @@
+name: Deploy Midterm Django App
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Midterm/**'  # Trigger only if files within Midterm are changed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        if: env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 4: Build and push Docker image (optional)
+      - name: Build and push Docker image
+        if: env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
+        uses: docker/build-push-action@v4
+        with:
+          context: ./Midterm
+          file: ./Midterm/Dockerfile
+          push: true
+          tags: diable201/midterm:latest
+
+      # Step 5: Deploy to server via SSH
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.11
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916  
+          script: |
+            cd ${{ secrets.REMOTE_PROJECT_PATH }}
+
+            # Backup existing .env file
+            if [ -f .env ]; then
+              cp .env .env.backup.$(date +%s)
+            fi
+
+            # Create the new .env file
+            cat <<EOF > .env
+            POSTGRES_DB={{ secrets.POSTGRES_DB }}
+            POSTGRES_USER={{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD={{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_HOST={{ secrets.POSTGRES_HOST }}
+            POSTGRES_PORT={{ secrets.POSTGRES_PORT }}
+            REDIS_URL={{ secrets.REDIS_URL }}
+            SECRET_KEY={{ secrets.SECRET_KEY }}
+            DEBUG={{ secrets.DEBUG }}
+            EOF
+
+            # Set proper permissions
+            chmod 600 .env
+
+            # Pull the latest Docker image (if using Docker Hub)
+            docker compose pull
+
+            # Restart the containers
+            docker compose up -d --remove-orphans
+      
+      # Step 6: Send Telegram Notification on Success
+      - name: Send Telegram Notification - Success
+        if: success()
+        uses: appleboy/telegram-action@v0.8.0
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ *Deployment Successful*
+            The Midterm Django App has been deployed successfully! 🎉
+          parse_mode: Markdown
+
+      # Step 7: Send Telegram Notification on Failure
+      - name: Send Telegram Notification - Failure
+        if: failure()
+        uses: appleboy/telegram-action@v0.8.0
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ❌ *Deployment Failed*
+            The deployment of the Midterm Django App has failed. Please check the GitHub Actions logs for details. 😞
+          parse_mode: Markdown

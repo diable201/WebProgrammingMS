@@ -1,7 +1,6 @@
 services:
   web:
-    build:
-      context: .
+    image: diable201/midterm:latest
     volumes:
       - ./static:/app/static
       - ./media:/app/media
