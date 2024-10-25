@@ -27,8 +27,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Step 4: Build and push Docker image (optional)
-      - name: Build and push Docker image
+      # Step 4: Build and Push Docker Image
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: ./Midterm
@@ -36,15 +36,8 @@ jobs:
           push: true
           tags: diable201/midterm:latest
 
-      # Step 5: Transfer docker-compose.yaml via SCP
-      - name: Transfer docker-compose.yaml
-        run: |
-          scp -P 45916 -o StrictHostKeyChecking=no \
-          ./Midterm/docker-compose.yaml \
-          ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.REMOTE_PROJECT_PATH }}
-
-      # Step 5: Deploy to server via SSH
-      - name: Deploy to Server
+      # Step 5: Use SSH to Transfer docker-compose.yaml
+      - name: Transfer docker-compose.yaml via SSH
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -54,39 +47,48 @@ jobs:
           script_stop: true
           debug: true
           script: |
-            set -e  # Exit on any command failure
+            set -e
 
+            # Navigate to the project directory
             cd ${{ secrets.REMOTE_PROJECT_PATH }}
 
-            # Backup existing .env file
-            if [ -f .env ]; then
-              cp .env .env.backup.$(date +%s)
-            fi
-
-            # Create the new .env file
-            cat <<EOF > .env
-            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
-            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
-            REDIS_URL=${{ secrets.REDIS_URL }}
-            SECRET_KEY=${{ secrets.SECRET_KEY }}
-            DEBUG=${{ secrets.DEBUG }}
+            # Transfer docker-compose.yaml content
+            echo 'Copying docker-compose.yaml...'
+            cat > docker-compose.yaml << 'EOF'
+            $(cat ./Midterm/docker-compose.yaml)
             EOF
 
-            # Set proper permissions
-            chmod 600 .env
+            echo 'File copied successfully!'
 
-            # Pull the latest Docker image (if using Docker Hub)
+      # Step 6: Deploy using Docker Compose
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916
+          script_stop: true
+          debug: true
+          script: |
+            set -e
+
+            # Navigate to the project directory
+            cd ${{ secrets.REMOTE_PROJECT_PATH }}
+
+            # Stop and remove any running containers
+            docker compose down || true
+
+            # Pull the latest image
             docker compose pull
 
-            # Restart the containers
+            # Start the containers
             docker compose up -d --remove-orphans
 
+            # Collect static files
             docker compose exec web python todo/manage.py collectstatic --noinput
-      
-      # Step 6: Send Telegram Notification on Success
+
+      # Step 7: Send Telegram Notification on Success
       - name: Send Telegram Notification - Success
         if: success()
         uses: appleboy/telegram-action@master
@@ -97,7 +99,7 @@ jobs:
             ✅ *Deployment Successful*
             The Midterm Django App has been deployed successfully! 🎉
 
-      # Step 7: Send Telegram Notification on Failure
+      # Step 8: Send Telegram Notification on Failure
       - name: Send Telegram Notification - Failure
         if: failure()
         uses: appleboy/telegram-action@master
