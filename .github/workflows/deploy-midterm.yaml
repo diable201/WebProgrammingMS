@@ -69,6 +69,10 @@ jobs:
             # Set proper permissions
             chmod 600 .env
 
+            cat > docker-compose.yml <<'EOF'
+            $(cat ./Midterm/docker-compose.yml)
+            EOF
+
             # Pull the latest Docker image (if using Docker Hub)
             docker compose pull
 
