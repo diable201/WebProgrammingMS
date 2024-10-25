@@ -51,7 +51,7 @@ jobs:
             fi
             ls -l "${{ secrets.REMOTE_PROJECT_PATH }}"
 
-      # Step 5: Use SSH to Upload docker-compose.yaml
+      # Step 5: Use SCP to Upload docker-compose.yaml
       - name: Transfer docker-compose.yaml via SCP Action
         uses: appleboy/scp-action@master
         with:
