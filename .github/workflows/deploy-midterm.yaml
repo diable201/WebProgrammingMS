@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - master
+    # Uncomment the following lines if you want to trigger the workflow only when files within the Midterm directory change
     # paths:
-      # - 'Midterm/**'  # Trigger only if files within Midterm are changed
+      # - 'Midterm/**'
 
 jobs:
   deploy:
@@ -36,7 +37,8 @@ jobs:
           push: true
           tags: diable201/midterm:latest
 
-      - name: Cleanup Old docker-compose.yaml Directory (if any)
+      # Step 5: Cleanup Old docker-compose.yaml (file or directory)
+      - name: Cleanup Old docker-compose.yaml (file or directory)
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -44,14 +46,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 45916
           script: |
-            # Check if docker-compose.yaml exists as a directory
-            if [ -d "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
-              echo "Removing directory docker-compose.yaml"
+            echo "Checking if docker-compose.yaml exists..."
+            if [ -e "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
+              echo "docker-compose.yaml exists. Removing..."
               rm -rf "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
+            else
+              echo "docker-compose.yaml does not exist. No action needed."
             fi
+            echo "Listing contents of the project directory after cleanup:"
             ls -l "${{ secrets.REMOTE_PROJECT_PATH }}"
 
-      # Step 5: Use SCP to Upload docker-compose.yaml
+      # Step 6: Transfer docker-compose.yaml via SCP
       - name: Transfer docker-compose.yaml via SCP Action
         uses: appleboy/scp-action@master
         with:
@@ -63,7 +68,8 @@ jobs:
           target: "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
           overwrite: true
 
-      - name: Verify docker-compose.yaml on Server
+      # Step 7: Fix docker-compose.yaml Location If It's a Directory
+      - name: Fix docker-compose.yaml Location If It's a Directory
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -71,10 +77,37 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 45916
           script: |
-            echo "Checking the contents of the deployment directory:"
+            echo "Checking if docker-compose.yaml is a directory..."
+            if [ -d "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
+              echo "docker-compose.yaml is a directory. Moving the file to the correct location."
+              mv "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml/Midterm/docker-compose.yaml" "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
+              rm -rf "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"  # Remove the now-empty directory
+              echo "Moved docker-compose.yaml to the correct location and removed the directory."
+            else
+              echo "docker-compose.yaml is already a file. No action needed."
+            fi
+            echo "Listing contents of the project directory after fixing:"
             ls -l "${{ secrets.REMOTE_PROJECT_PATH }}"
 
-      # Step 6: SSH into the server and deploy with Docker Compose
+      # Step 8: Verify docker-compose.yaml is a File
+      - name: Verify docker-compose.yaml is a File
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916
+          script: |
+            echo "Verifying if docker-compose.yaml is a file..."
+            if [ -f "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
+              echo "Success: docker-compose.yaml is a file."
+            else
+              echo "Error: docker-compose.yaml is NOT a file."
+              ls -ld "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
+              exit 1  # Exit with error to halt the workflow
+            fi
+
+      # Step 9: Deploy to Server via SSH and Docker Compose
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -87,22 +120,22 @@ jobs:
           script: |
             set -e  # Exit on any error
 
-            # Navigate to the project directory
-            cd ${{ secrets.REMOTE_PROJECT_PATH }}
+            echo "Navigating to the project directory..."
+            cd "${{ secrets.REMOTE_PROJECT_PATH }}"
 
-            # Stop and remove any running containers
+            echo "Stopping and removing any running containers..."
             docker compose down || true
 
-            # Pull the latest image from Docker Hub
+            echo "Pulling the latest Docker image..."
             docker compose pull
 
-            # Start the containers in detached mode
+            echo "Starting containers in detached mode..."
             docker compose up -d --remove-orphans
 
-            # Ensure static files are collected
+            echo "Collecting static files..."
             docker compose exec web python todo/manage.py collectstatic --noinput
 
-      # Step 7: Send Telegram Notification on Success
+      # Step 10: Send Telegram Notification on Success
       - name: Send Telegram Notification - Success
         if: success()
         uses: appleboy/telegram-action@master
@@ -113,7 +146,7 @@ jobs:
             ✅ *Deployment Successful*
             The Midterm Django App has been deployed successfully! 🎉
 
-      # Step 8: Send Telegram Notification on Failure
+      # Step 11: Send Telegram Notification on Failure
       - name: Send Telegram Notification - Failure
         if: failure()
         uses: appleboy/telegram-action@master
