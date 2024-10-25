@@ -80,8 +80,7 @@ jobs:
             echo "Checking if docker-compose.yaml is a directory..."
             if [ -d "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
               echo "docker-compose.yaml is a directory. Moving the file to the correct location."
-              mv "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml/Midterm/docker-compose.yaml" "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
-              rm -rf "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"  # Remove the now-empty directory
+              mv "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml/Midterm/docker-compose.yaml" "${{ secrets.REMOTE_PROJECT_PATH }}"
               echo "Moved docker-compose.yaml to the correct location and removed the directory."
             else
               echo "docker-compose.yaml is already a file. No action needed."
