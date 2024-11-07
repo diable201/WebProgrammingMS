@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Diable Blog{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'post_list' %}">Assignment 3 Blog</a></h1>
+    </header>
+    <nav>
+        <a href="{% url 'post_list' %}">Home</a>
+        <a href="{% url 'post_new' %}">New Post</a>
+    </nav>
+    <div class="container">
+        <hr>
+        {% block content %}{% endblock %}
+        <hr>
+    </div>
+    <footer>
+        <p>&copy; {{ now|date:"Y" }} Diable Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ post.title }}</h2>
+    <p>By {{ post.author.username }}
+        on {{ post.published_date|date:"F d, Y" }}
+        in {{ post.categories.all|join:", " }}</p>
+    <p>{{ post.content }}</p>
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="Post Image">
+    {% endif %}
+    <hr>
+    <h3>Comments</h3>
+    {% for comment in post.comment_set.all %}
+        <div class="comment">
+            <p><strong>{{ comment.author.username }}</strong> on {{ comment.published_date|date:"F d, Y" }}</p>
+            <p>{{ comment.content }}</p>
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+{% endblock %}
