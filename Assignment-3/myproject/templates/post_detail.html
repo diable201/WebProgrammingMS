@@ -7,7 +7,7 @@
         in {{ post.categories.all|join:", " }}</p>
     <p>{{ post.content }}</p>
     {% if post.image %}
-        <img src="{{ post.image.url }}" alt="Post Image">
+        <img src="{{ post.image.url }}" alt="Post Image" width="300" height="400">
     {% endif %}
     <hr>
     <h3>Comments</h3>
