@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Notifications</title>
+</head>
+<body>
+    <h1>Real-Time Notifications</h1>
+    <ul id="notifications">
+    </ul>
+
+    <script>
+        const token = localStorage.getItem('access_token');
+
+        if (!token) {
+            window.location.href = '/login/';
+        }
+
+        // Use the token for API requests or WebSocket connections
+        function apiRequest(url, options) {
+            return fetch(url, {
+                ...options,
+                headers: {
+                    ...options.headers,
+                    'Authorization': 'Bearer ' + token,
+                },
+            });
+        }
+
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
+        // Establish WebSocket connection with the token in query parameters
+        const socket = new WebSocket(
+            `ws://127.0.0.1:8000/ws/notifications/?token=${encodeURIComponent(token)}`
+        );
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const notificationsList = document.getElementById('notifications');
+            const newNotification = document.createElement('li');
+            newNotification.textContent = data.message;
+            notificationsList.appendChild(newNotification);
+        };
+
+        socket.onopen = function() {
+            console.log('WebSocket connection opened.');
+        };
+
+        socket.onclose = function(event) {
+            console.log('WebSocket connection closed:', event.code, event.reason);
+            if (event.code === 4401) {
+                alert('Unauthorized: Please log in.');
+                window.location.href = '/login/';
+            }
+        };
+
+        socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+    </script>
+</body>
+</html>

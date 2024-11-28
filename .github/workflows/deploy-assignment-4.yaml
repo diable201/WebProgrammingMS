@@ -1,0 +1,141 @@
+name: Deploy Assignment 4 Django App
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'Assignment-4/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 4: Build and Push Docker Image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./Assignment-4
+          file: ./Assignment-4/Dockerfile
+          push: true
+          tags: diable201/assignment-4:latest
+
+      # Step 5: Cleanup Old docker-compose.yaml (file or directory)
+      - name: Cleanup Old docker-compose.yaml (file or directory)
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916
+          script: |
+            echo "Checking if docker-compose.yaml exists..."
+            if [ -e "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
+              echo "docker-compose.yaml exists. Removing..."
+              rm -rf "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
+            else
+              echo "docker-compose.yaml does not exist. No action needed."
+            fi
+            echo "Listing contents of the project directory after cleanup:"
+            ls -l "${{ secrets.REMOTE_PROJECT_PATH }}"
+
+      # Step 6: Transfer docker-compose.yaml via SCP
+      - name: Transfer docker-compose.yaml via SCP Action
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916
+          source: "Midterm/docker-compose.yaml"
+          target: "${{ secrets.REMOTE_PROJECT_PATH }}/"
+          overwrite: true
+
+      # Step 6: Create .env File on Server via SSH
+      - name: Create .env File on Server
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916
+          script: |
+            echo "Creating .env file on the server..."
+            cat > "${{ secrets.DOCKER_COMPOSE_PATH }}/.env" <<EOF
+            DEBUG=${{ secrets.DEBUG }}
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+            REDIS_URL=${{ secrets.REDIS_URL }}
+            ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+            EOF
+            echo ".env file created successfully."
+
+      # Step 7: Deploy to Server via SSH and Docker Compose
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 45916
+          script_stop: true
+          debug: true
+          script: |
+            set -e  # Exit on any error
+
+            echo "Navigating to the project directory..."
+            cd "${{ secrets.DOCKER_COMPOSE_PATH }}"
+
+            echo "Stopping and removing any running containers..."
+            docker compose down || true
+
+            echo "Pulling the latest Docker image..."
+            docker compose pull
+
+            echo "Starting containers in detached mode..."
+            docker compose up -d --remove-orphans
+
+            echo "Collecting static files..."
+            docker compose exec web python todo/manage.py collectstatic --noinput
+
+      # Step 8: Send Telegram Notification on Success
+      - name: Send Telegram Notification - Success
+        if: success()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ *Deployment Successful*
+            The Midterm Django App has been deployed successfully! 🎉
+
+      # Step 9: Send Telegram Notification on Failure
+      - name: Send Telegram Notification - Failure
+        if: failure()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ❌ *Deployment Failed*
+            The deployment of the Midterm Django App has failed. Please check the GitHub Actions logs for details. 😞
