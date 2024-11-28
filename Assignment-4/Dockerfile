@@ -33,6 +33,6 @@ COPY --from=builder /app /app
 
 EXPOSE 8000
 
-RUN chmod +x /app/todo/scripts/entrypoint.sh
+RUN chmod +x /app/myproject/scripts/entrypoint.sh
 
-ENTRYPOINT ["/app/todo/scripts/entrypoint.sh"]
+ENTRYPOINT ["/app/myproject/scripts/entrypoint.sh"]

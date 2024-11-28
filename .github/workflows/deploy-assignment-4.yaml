@@ -127,7 +127,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
             ✅ *Deployment Successful*
-            The Midterm Django App has been deployed successfully! 🎉
+            The Assignment 4 Django App has been deployed successfully! 🎉
 
       # Step 9: Send Telegram Notification on Failure
       - name: Send Telegram Notification - Failure
@@ -138,4 +138,4 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
             ❌ *Deployment Failed*
-            The deployment of the Midterm Django App has failed. Please check the GitHub Actions logs for details. 😞
+            The deployment of the Assignment 4 Django App has failed. Please check the GitHub Actions logs for details. 😞
