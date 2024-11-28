@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'Assignment-4/**'
+workflow_dispatch:
   
 
 jobs:
