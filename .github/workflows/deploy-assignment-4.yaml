@@ -77,15 +77,15 @@ jobs:
           port: 45916
           script: |
             echo "Creating .env file on the server..."
-            cat > "${{ secrets.DOCKER_COMPOSE_PATH }}/.env" <<EOF
+            cat > "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}/.env" <<EOF
             DEBUG=${{ secrets.DEBUG }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
-            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            POSTGRES_DB=${{ secrets.POSTGRES_ASSIGNMENT_DB }}
             POSTGRES_USER=${{ secrets.POSTGRES_USER }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
             POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
-            REDIS_URL=${{ secrets.REDIS_URL }}
+            REDIS=${{ secrets.REDIS }}
             ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
             EOF
             echo ".env file created successfully."
@@ -104,7 +104,7 @@ jobs:
             set -e  # Exit on any error
 
             echo "Navigating to the project directory..."
-            cd "${{ secrets.DOCKER_COMPOSE_PATH }}"
+            cd "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}"
 
             echo "Stopping and removing any running containers..."
             docker compose down || true
