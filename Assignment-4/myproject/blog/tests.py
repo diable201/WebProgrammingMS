@@ -74,9 +74,7 @@ class PostTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_post_as_non_author(self):
-        # Create another user
         other_user = User.objects.create_user(username="otheruser", password="testpass")
-        # Obtain JWT token for the other user
         other_token = self.get_jwt_token(other_user)
         # Authenticate as the other user
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + other_token)
