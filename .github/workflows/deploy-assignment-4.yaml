@@ -116,7 +116,7 @@ jobs:
             docker compose up -d --remove-orphans
 
             echo "Collecting static files..."
-            docker compose exec web python todo/manage.py collectstatic --noinput
+            docker compose exec web python myproject/manage.py collectstatic --noinput
 
       # Step 8: Send Telegram Notification on Success
       - name: Send Telegram Notification - Success
