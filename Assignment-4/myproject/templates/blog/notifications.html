@@ -27,7 +27,7 @@
         }
 
         const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-
+        const wsHost = window.location.host;
         // Establish WebSocket connection with the token in query parameters
         const socket = new WebSocket(
             `ws://127.0.0.1:8000/ws/notifications/?token=${encodeURIComponent(token)}`

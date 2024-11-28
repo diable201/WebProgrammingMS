@@ -22,6 +22,7 @@ from rest_framework.authtoken import views as drf_views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from blog.api import notifications_router, router_v1, router_v2
+from blog.api.notifications_views import login_view
 
 api_v1_patterns = [
     path("api/v1/", include((router_v1, "api_v1"), namespace="api_v1")),
@@ -49,6 +50,7 @@ notifications_patterns = [
             namespace="notifications",
         ),
     ),
+    path("login/", login_view, name="login"),
 ]
 
 urlpatterns = [
