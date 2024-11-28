@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'Assignment-4/**'
+  
 
 jobs:
   deploy:
@@ -46,14 +47,14 @@ jobs:
           port: 45916
           script: |
             echo "Checking if docker-compose.yaml exists..."
-            if [ -e "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml" ]; then
+            if [ -e "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}/docker-compose.yaml" ]; then
               echo "docker-compose.yaml exists. Removing..."
-              rm -rf "${{ secrets.REMOTE_PROJECT_PATH }}/docker-compose.yaml"
+              rm -rf "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}/docker-compose.yaml"
             else
               echo "docker-compose.yaml does not exist. No action needed."
             fi
             echo "Listing contents of the project directory after cleanup:"
-            ls -l "${{ secrets.REMOTE_PROJECT_PATH }}"
+            ls -l "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}"
 
       # Step 6: Transfer docker-compose.yaml via SCP
       - name: Transfer docker-compose.yaml via SCP Action
