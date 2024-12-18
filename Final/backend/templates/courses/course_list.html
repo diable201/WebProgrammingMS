@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Courses</title>
+</head>
+<body>
+<h1>All Courses</h1>
+<ul>
+    {% for course in courses %}
+    <li>{{ course.title }} - {{ course.price }} USD</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
