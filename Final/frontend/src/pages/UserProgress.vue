@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar/>
   <div class="p-8 max-w-4xl mx-auto">
     <!-- Header -->
     <h1 class="text-3xl font-bold mb-6">Your Progress 📊</h1>
@@ -63,10 +63,10 @@ import Navbar from "../components/Navbar.vue";
 import axios from "axios";
 
 export default {
-  components: { Navbar },
+  components: {Navbar},
   data() {
     return {
-      progress: [], 
+      progress: [],
     };
   },
   mounted() {

@@ -139,8 +139,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Swagger TODO API",
-    "DESCRIPTION": "TODO API Swagger documentation",
+    "TITLE": "Swagger Elearning API",
+    "DESCRIPTION": "Elearning API Swagger documentation",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": "/api/",
@@ -170,7 +170,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]  # For static files in your project
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

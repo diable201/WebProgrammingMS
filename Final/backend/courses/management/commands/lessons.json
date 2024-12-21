@@ -1,0 +1,44 @@
+[
+  {
+    "lesson_id": 1,
+    "course_id": 1,
+    "title": "What is Computer Science?",
+    "content": "In this lesson, we discuss what computer science is and why it is important.",
+    "video_url": "https://www.youtube.com/watch?v=tpIctyqH29Q"
+  },
+  {
+    "lesson_id": 2,
+    "course_id": 1,
+    "title": "Introduction to Programming",
+    "content": "This lesson introduces the basics of programming using Python.",
+    "video_url": "https://www.youtube.com/watch?v=_uQrJ0TkZlc"
+  },
+  {
+    "lesson_id": 3,
+    "course_id": 2,
+    "title": "Understanding Arrays",
+    "content": "Learn about arrays, their operations, and use cases.",
+    "video_url": "https://www.youtube.com/watch?v=RBSGKlAvoiM"
+  },
+  {
+    "lesson_id": 4,
+    "course_id": 2,
+    "title": "Sorting Algorithms",
+    "content": "Explore various sorting algorithms like Quick Sort and Merge Sort.",
+    "video_url": "https://www.youtube.com/watch?v=Hoixgm4-P4M"
+  },
+  {
+    "lesson_id": 5,
+    "course_id": 3,
+    "title": "Introduction to Machine Learning",
+    "content": "Understand what machine learning is and its applications.",
+    "video_url": "https://www.youtube.com/watch?v=GwIo3gDZCVQ"
+  },
+  {
+    "lesson_id": 6,
+    "course_id": 3,
+    "title": "Supervised vs Unsupervised Learning",
+    "content": "Learn about the difference between supervised and unsupervised learning.",
+    "video_url": "https://www.youtube.com/watch?v=Gv9_4yMHFhI"
+  }
+]

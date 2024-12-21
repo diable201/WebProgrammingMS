@@ -82,12 +82,8 @@ class QuizSubmissionView(RetrieveModelMixin, GenericViewSet):
         total_questions = quiz.questions.count()
         correct_count = 0
         for q in quiz.questions.all():
-            print("DSLAKDLKSALD:")
-            print(q.correct_option)
             user_answer = answers.get(str(q.id))
-            print(user_answer)
             if user_answer and user_answer == q.correct_option:
-                print("Correct")
                 correct_count += 1
 
         score = int((correct_count / total_questions) * quiz.total_marks)

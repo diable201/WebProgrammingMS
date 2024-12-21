@@ -1,15 +1,12 @@
 <template>
   <div class="p-4">
-    <!-- Navbar -->
     <Navbar />
 
-    <!-- Login Form -->
     <div class="max-w-sm mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
       <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Welcome Back! 👋</h1>
       <p class="text-center text-gray-600 mb-6">Please sign in to continue.</p>
 
       <form @submit.prevent="loginUser" class="space-y-4">
-        <!-- Username Input -->
         <div>
           <label for="username" class="block text-gray-700 font-medium">Username</label>
           <input
@@ -22,7 +19,6 @@
           />
         </div>
 
-        <!-- Password Input -->
         <div>
           <label for="password" class="block text-gray-700 font-medium">Password</label>
           <input
@@ -35,7 +31,6 @@
           />
         </div>
 
-        <!-- Submit Button -->
         <button
           type="submit"
           class="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-300"

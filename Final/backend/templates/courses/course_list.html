@@ -1,13 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
+<link rel="stylesheet" href="{% static "style.css" %}">
 <head>
     <title>Courses</title>
 </head>
 <body>
-<h1>All Courses</h1>
+<h1>Available Courses</h1>
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }}!</p>
+{% else %}
+    <a href="{% url 'login' %}">Login</a>
+{% endif %}
 <ul>
     {% for course in courses %}
-    <li>{{ course.title }} - {{ course.price }} USD</li>
+        <li>
+            <p>Course Title: {{ course.title|title }}</p>
+
+            <a href="{% url 'course_detail' course.id %}">{{ course.title }}</a>
+            - {{ course.price }} USD
+        </li>
     {% endfor %}
 </ul>
 </body>

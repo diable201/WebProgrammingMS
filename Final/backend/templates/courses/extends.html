@@ -1,0 +1,12 @@
+{% extends "courses/base.html" %}
+
+{% block title %}Course List{% endblock %}
+
+{% block content %}
+    <h1>Course List</h1>
+    <ul>
+        {% for course in courses %}
+            <li>{{ course.title }} - {{ course.price }} USD</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,86 @@
+[
+  {
+    "quiz_id": 1,
+    "course_id": 1,
+    "title": "Basics of Computer Science",
+    "total_marks": 20,
+    "questions": [
+      {
+        "question_id": 101,
+        "quiz_id": 1,
+        "question_text": "What does 'CPU' stand for?",
+        "option_a": "Central Processing Unit",
+        "option_b": "Central Program Unit",
+        "option_c": "Control Processing Unit",
+        "option_d": "Control Program Unit",
+        "correct_option": "A"
+      },
+      {
+        "question_id": 102,
+        "quiz_id": 1,
+        "question_text": "Which programming language is considered beginner-friendly?",
+        "option_a": "Java",
+        "option_b": "Python",
+        "option_c": "C++",
+        "option_d": "Assembly",
+        "correct_option": "B"
+      }
+    ]
+  },
+  {
+    "quiz_id": 2,
+    "course_id": 2,
+    "title": "Data Structures Essentials",
+    "total_marks": 25,
+    "questions": [
+      {
+        "question_id": 201,
+        "quiz_id": 2,
+        "question_text": "Which data structure uses LIFO?",
+        "option_a": "Queue",
+        "option_b": "Stack",
+        "option_c": "Array",
+        "option_d": "Linked List",
+        "correct_option": "B"
+      },
+      {
+        "question_id": 202,
+        "quiz_id": 2,
+        "question_text": "Which sorting algorithm is the fastest on average?",
+        "option_a": "Bubble Sort",
+        "option_b": "Selection Sort",
+        "option_c": "Merge Sort",
+        "option_d": "Quick Sort",
+        "correct_option": "D"
+      }
+    ]
+  },
+  {
+    "quiz_id": 3,
+    "course_id": 3,
+    "title": "Machine Learning Basics",
+    "total_marks": 30,
+    "questions": [
+      {
+        "question_id": 301,
+        "quiz_id": 3,
+        "question_text": "What is overfitting in machine learning?",
+        "option_a": "Model performs poorly on training data.",
+        "option_b": "Model performs poorly on new data.",
+        "option_c": "Model memorizes training data but does not generalize.",
+        "option_d": "Model is too simple for the data.",
+        "correct_option": "C"
+      },
+      {
+        "question_id": 302,
+        "quiz_id": 3,
+        "question_text": "Which algorithm is used for regression problems?",
+        "option_a": "K-Means",
+        "option_b": "Logistic Regression",
+        "option_c": "Linear Regression",
+        "option_d": "Decision Trees",
+        "correct_option": "C"
+      }
+    ]
+  }
+]

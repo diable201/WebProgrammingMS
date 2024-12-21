@@ -32,9 +32,10 @@ class CourseSerializer(serializers.ModelSerializer):
             "created_at",
             "instructor",
             "instructor_id",
+            "image",
         ]
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Course:
         if not self.context["request"].user.is_instructor:
             raise serializers.ValidationError("Only instructors can create courses.")
 

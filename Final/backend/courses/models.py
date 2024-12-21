@@ -47,6 +47,10 @@ class Course(models.Model):
         verbose_name="Instructor",
         help_text="Select the course instructor.",
     )
+    image = models.CharField(
+        verbose_name="Course Image",
+        help_text="Upload the course image.",
+    )
 
     def __str__(self) -> str:
         return self.title

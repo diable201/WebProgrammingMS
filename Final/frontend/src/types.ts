@@ -20,6 +20,7 @@ export interface Course {
   category: Category | null;
   created_at: string;
   instructor: User;
+  image: string;
 }
 
 export interface Enrollment {
