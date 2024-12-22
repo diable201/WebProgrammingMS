@@ -1,4 +1,4 @@
-name: Deploy Assignment 4 Django App
+name: Deploy Elearning Django App
 
 on:
   push:
