@@ -33,7 +33,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: ./Final
+          context: ./Final/backend
           file: ./Final/backend/Dockerfile
           push: true
           tags: diable201/final:latest
