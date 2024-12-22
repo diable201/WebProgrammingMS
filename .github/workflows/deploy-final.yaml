@@ -79,7 +79,7 @@ jobs:
           port: 45916
           script: |
             echo "Creating .env file on the server..."
-            cat > "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}/.env" <<EOF
+            cat > "${{ secrets.DOCKER_COMPOSE_FINAL_PATH }}/.env" <<EOF
             DEBUG=${{ secrets.DEBUG }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
             POSTGRES_DB=${{ secrets.POSTGRES_ASSIGNMENT_DB }}
@@ -105,7 +105,7 @@ jobs:
             set -e  # Exit on any error
 
             echo "Navigating to the project directory..."
-            cd "${{ secrets.DOCKER_COMPOSE_ASSIGNMENT_PATH }}"
+            cd "${{ secrets.DOCKER_COMPOSE_FINAL_PATH }}"
 
             echo "Stopping and removing any running containers..."
             docker compose down || true

@@ -1,6 +1,6 @@
 services:
   web:
-    build: .
+    image: diable201/final:latest
     ports:
       - "8000:8000"
     depends_on:
