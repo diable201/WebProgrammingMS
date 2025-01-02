@@ -151,8 +151,8 @@ Ensure the following are installed:
 ### 📥 Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/e-learning-platform.git
-   cd e-learning-platform
+   git clone https://github.com/diable201/WebProgrammingMS.git
+   cd WebProgrammingMS
    ```
 2. Build and run the application:
    ```bash
